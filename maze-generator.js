@@ -90,31 +90,37 @@ function createMaze(dimension) {
 
 // Given a maze array create a visual map
 function createMap(maze) {
+  const wallTile = "\x1b[32m# \x1b[0m";
+  const floorTile = "\x1b[36m. \x1b[0m";
+
   let map = Array.from(Array(maze.length * 2 + 1)).map((line) =>
-    Array.from(Array(maze.length * 2 + 1)).fill("#", 0, maze.length * 2 + 1)
+    Array.from(Array(maze.length * 2 + 1)).fill(wallTile, 0, maze.length * 2 + 1)
   );
 
   maze.map((line, lineIndex) => {
     line.map((cell, columnIndex) => {
       if (cell.visited) {
-        map[lineIndex * 2 + 1][columnIndex * 2 + 1] = ".";
+        map[lineIndex * 2 + 1][columnIndex * 2 + 1] = floorTile;
         cell.corridors.map((corridor) => {
           if (corridor.line > cell.line) {
-            map[lineIndex * 2 + 2][columnIndex * 2 + 1] = ".";
+            map[lineIndex * 2 + 2][columnIndex * 2 + 1] = floorTile;
           } else if (corridor.line < cell.line) {
-            map[lineIndex * 2][columnIndex * 2 + 1] = ".";
+            map[lineIndex * 2][columnIndex * 2 + 1] = floorTile;
           } else if (corridor.column > cell.column) {
-            map[lineIndex * 2 + 1][columnIndex * 2 + 2] = ".";
+            map[lineIndex * 2 + 1][columnIndex * 2 + 2] = floorTile;
           } else if (corridor.column < cell.column) {
-            map[lineIndex * 2 + 1][columnIndex * 2] = ".";
+            map[lineIndex * 2 + 1][columnIndex * 2] = floorTile;
           }
         });
       }
     });
   });
-  return map;
+
+  return map.map(line => 
+    line.join("")
+  ).join("\n");
 }
 
 var maze = createMaze(5);
 var map = createMap(maze);
-console.log(map.join("\n"));
+console.log(map);
