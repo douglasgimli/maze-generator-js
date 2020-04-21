@@ -25,4 +25,4 @@ This is yet a work in progress, I'm still wondering if it will progress to a ful
 
 # Visual Output
 
-![Maze Generator](https://github.com/douglasgimli/maze-generator-js/raw/master/src/common/examples/maze-generator-js.gif "Maze Generator")
+![Maze Generator](https://raw.githubusercontent.com/douglasgimli/maze-generator-js/master/examples/maze-generator-js.gif "Maze Generator")
