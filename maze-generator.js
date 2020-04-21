@@ -74,10 +74,10 @@ function findAndConnectEmptyCells(maze, line = 0, column = 0) {
 }
 
 // Given a square dimension create a random maze with the hunt and kill algorithm
-function createMaze(width, height) {
+function createMaze(dimension) {
   // Create a multidimensional array with objects representing each square of the maze
-  const maze = Array.from(Array(width)).map((line, lineIndex) =>
-    Array.from(Array(height)).map((column, columnIndex) => ({
+  const maze = Array.from(Array(dimension)).map((line, lineIndex) =>
+    Array.from(Array(dimension)).map((column, columnIndex) => ({
       line: lineIndex,
       column: columnIndex,
       visited: false,
@@ -88,36 +88,33 @@ function createMaze(width, height) {
   return maze;
 }
 
-const createMap = (maze) => {
-  let map = new Array(maze.length * 2 + 1);
-  map.fill("#", 0, maze.length * 2 + 1);
+// Given a maze array create a visual map
+function createMap(maze) {
+  let map = Array.from(Array(maze.length * 2 + 1)).map((line) =>
+    Array.from(Array(maze.length * 2 + 1)).fill("#", 0, maze.length * 2 + 1)
+  );
 
-  for (let i = 0; i < map.length; i++) {
-    map[i] = new Array(maze.length * 2 + 1);
-    map[i].fill("#", 0, maze.length * 2 + 1);
-  }
-
-  for (let x = 0; x < maze.length; x++) {
-    for (var y = 0; y < maze[x].length; y++) {
-      if (maze[x][y].visited) {
-        map[x * 2 + 1][y * 2 + 1] = ".";
-        maze[x][y].corridors.forEach((neighbour) => {
-          if (neighbour.line > maze[x][y].line) {
-            map[x * 2 + 2][y * 2 + 1] = ".";
-          } else if (neighbour.line < maze[x][y].line) {
-            map[x * 2][y * 2 + 1] = ".";
-          } else if (neighbour.column > maze[x][y].column) {
-            map[x * 2 + 1][y * 2 + 2] = ".";
-          } else if (neighbour.column < maze[x][y].column) {
-            map[x * 2 + 1][y * 2] = ".";
+  maze.map((line, lineIndex) => {
+    line.map((cell, columnIndex) => {
+      if (cell.visited) {
+        map[lineIndex * 2 + 1][columnIndex * 2 + 1] = ".";
+        cell.corridors.map((corridor) => {
+          if (corridor.line > cell.line) {
+            map[lineIndex * 2 + 2][columnIndex * 2 + 1] = ".";
+          } else if (corridor.line < cell.line) {
+            map[lineIndex * 2][columnIndex * 2 + 1] = ".";
+          } else if (corridor.column > cell.column) {
+            map[lineIndex * 2 + 1][columnIndex * 2 + 2] = ".";
+          } else if (corridor.column < cell.column) {
+            map[lineIndex * 2 + 1][columnIndex * 2] = ".";
           }
         });
       }
-    }
-  }
+    });
+  });
   return map;
-};
+}
 
-var maze = createMaze(5, 5);
+var maze = createMaze(5);
 var map = createMap(maze);
 console.log(map.join("\n"));
