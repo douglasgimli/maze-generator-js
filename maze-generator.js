@@ -1,28 +1,28 @@
 // Given an maze array and one specific cell find any not visited near cells
-function findNeighbourAvailableNeighbour(maze, cell, emptyNeighbours = false) {
+function findRandomNeighbour(maze, cell, checkForVisitedNeighbours = false) {
   let availableNeighbours = [];
 
   if (
     cell.column > 0 &&
-    maze[cell.line][cell.column - 1].visited == emptyNeighbours
+    maze[cell.line][cell.column - 1].visited == checkForVisitedNeighbours
   ) {
     availableNeighbours.push(maze[cell.line][cell.column - 1]);
   }
   if (
     cell.line > 0 &&
-    maze[cell.line - 1][cell.column].visited == emptyNeighbours
+    maze[cell.line - 1][cell.column].visited == checkForVisitedNeighbours
   ) {
     availableNeighbours.push(maze[cell.line - 1][cell.column]);
   }
   if (
     cell.column < maze.length - 1 &&
-    maze[cell.line][cell.column + 1].visited == emptyNeighbours
+    maze[cell.line][cell.column + 1].visited == checkForVisitedNeighbours
   ) {
     availableNeighbours.push(maze[cell.line][cell.column + 1]);
   }
   if (
     cell.line < maze.length - 1 &&
-    maze[cell.line + 1][cell.column].visited == emptyNeighbours
+    maze[cell.line + 1][cell.column].visited == checkForVisitedNeighbours
   ) {
     availableNeighbours.push(maze[cell.line + 1][cell.column]);
   }
@@ -37,14 +37,14 @@ function findNeighbourAvailableNeighbour(maze, cell, emptyNeighbours = false) {
 }
 
 // Given a maze and a position itinerate creating connections until there's no more available positions
-function createConnectionsBetweenEmptyCells(maze, line = 0, column = 0) {
+function createEmptyCellsConnections(maze, line = 0, column = 0) {
   const cell = maze[line][column];
   cell.visited = true;
 
-  const nextCell = findNeighbourAvailableNeighbour(maze, cell);
+  const nextCell = findRandomNeighbour(maze, cell);
   if (nextCell) {
     cell.corridors.push(nextCell);
-    createConnectionsBetweenEmptyCells(maze, nextCell.line, nextCell.column);
+    createEmptyCellsConnections(maze, nextCell.line, nextCell.column);
     return;
   }
   findAndConnectEmptyCells(maze);
@@ -66,10 +66,10 @@ function findAndConnectEmptyCells(maze, line = 0, column = 0) {
     return;
   }
 
-  const nextCell = findNeighbourAvailableNeighbour(maze, cell, true);
+  const nextCell = findRandomNeighbour(maze, cell, true);
   if (nextCell) {
     cell.corridors.push(nextCell);
-    createConnectionsBetweenEmptyCells(maze, nextCell.line, nextCell.column);
+    createEmptyCellsConnections(maze, nextCell.line, nextCell.column);
   }
 }
 
@@ -84,7 +84,7 @@ function createMaze(dimension) {
       corridors: [],
     }))
   );
-  createConnectionsBetweenEmptyCells(maze);
+  createEmptyCellsConnections(maze);
   return maze;
 }
 
