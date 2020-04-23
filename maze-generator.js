@@ -1,39 +1,27 @@
 // Given an maze array and one specific cell find any not visited near cells
 function findRandomNeighbour(maze, cell, checkForVisitedNeighbours = false) {
-  let availableNeighbours = [];
+  const possibleMoviments = [
+    [-1, 0],
+    [0, -1],
+    [0, 1],
+    [1, 0],
+  ];
+  const availableNeighbours = possibleMoviments.reduce(
+    (validNeighbours, position, index) =>
+      maze[cell.line + position[0]] !== undefined &&
+      maze[cell.line + position[0]][cell.column + position[1]] !== undefined &&
+      maze[cell.line + position[0]][cell.column + position[1]].visited ==
+        checkForVisitedNeighbours
+        ? validNeighbours.concat(
+            maze[cell.line + position[0]][cell.column + position[1]]
+          )
+        : validNeighbours,
+    []
+  );
 
-  if (
-    cell.column > 0 &&
-    maze[cell.line][cell.column - 1].visited == checkForVisitedNeighbours
-  ) {
-    availableNeighbours.push(maze[cell.line][cell.column - 1]);
-  }
-  if (
-    cell.line > 0 &&
-    maze[cell.line - 1][cell.column].visited == checkForVisitedNeighbours
-  ) {
-    availableNeighbours.push(maze[cell.line - 1][cell.column]);
-  }
-  if (
-    cell.column < maze.length - 1 &&
-    maze[cell.line][cell.column + 1].visited == checkForVisitedNeighbours
-  ) {
-    availableNeighbours.push(maze[cell.line][cell.column + 1]);
-  }
-  if (
-    cell.line < maze.length - 1 &&
-    maze[cell.line + 1][cell.column].visited == checkForVisitedNeighbours
-  ) {
-    availableNeighbours.push(maze[cell.line + 1][cell.column]);
-  }
-
-  if (availableNeighbours.length > 0) {
-    const nextCell =
-      availableNeighbours[parseInt(Math.random() * availableNeighbours.length)];
-    return nextCell;
-  }
-
-  return false;
+  return availableNeighbours.length
+    ? availableNeighbours[parseInt(Math.random() * availableNeighbours.length)]
+    : false;
 }
 
 // Given a maze and a position itinerate creating connections until there's no more available positions
@@ -94,7 +82,11 @@ function createMap(maze) {
   const floorTile = "\x1b[36m. \x1b[0m";
 
   let map = Array.from(Array(maze.length * 2 + 1)).map((line) =>
-    Array.from(Array(maze.length * 2 + 1)).fill(wallTile, 0, maze.length * 2 + 1)
+    Array.from(Array(maze.length * 2 + 1)).fill(
+      wallTile,
+      0,
+      maze.length * 2 + 1
+    )
   );
 
   maze.map((line, lineIndex) => {
@@ -116,9 +108,7 @@ function createMap(maze) {
     });
   });
 
-  return map.map(line => 
-    line.join("")
-  ).join("\n");
+  return map.map((line) => line.join("")).join("\n");
 }
 
 var maze = createMaze(5);
