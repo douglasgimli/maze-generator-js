@@ -7,21 +7,23 @@ function findRandomNeighbour(maze, cell, checkForVisitedNeighbours = false) {
     [1, 0],
   ];
   const availableNeighbours = possibleMoviments.reduce(
-    (validNeighbours, position, index) =>
-      maze[cell.line + position[0]] !== undefined &&
-      maze[cell.line + position[0]][cell.column + position[1]] !== undefined &&
-      maze[cell.line + position[0]][cell.column + position[1]].visited ==
-        checkForVisitedNeighbours
-        ? validNeighbours.concat(
-            maze[cell.line + position[0]][cell.column + position[1]]
-          )
-        : validNeighbours,
+    (validNeighbours, position) => {
+      const currentNeighbour =
+        maze[cell.line + position[0]] &&
+        maze[cell.line + position[0]][cell.column + position[1]];
+
+      const isValidPosition =
+        currentNeighbour &&
+        currentNeighbour.visited == checkForVisitedNeighbours;
+
+      return isValidPosition
+        ? validNeighbours.concat(currentNeighbour)
+        : validNeighbours;
+    },
     []
   );
-
-  return availableNeighbours.length
-    ? availableNeighbours[parseInt(Math.random() * availableNeighbours.length)]
-    : false;
+  const randomIndex = parseInt(Math.random() * availableNeighbours.length);
+  return availableNeighbours[randomIndex] || false;
 }
 
 // Given a maze and a position itinerate creating connections until there's no more available positions
@@ -111,6 +113,4 @@ function createMap(maze) {
   return map.map((line) => line.join("")).join("\n");
 }
 
-var maze = createMaze(5);
-var map = createMap(maze);
-console.log(map);
+console.log(createMap(createMaze(5)));
